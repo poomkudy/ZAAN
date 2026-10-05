@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAAN ACTIVITY DAY REPORT</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --y1:#fff9c4;--y2:#fff176;--y3:#ffee58;--y4:#fdd835;--y5:#f9a825;
+  --y6:#f57f17;--dk:#3e2a00;--dk2:#5a3e00;--border:#e6c200;--bg:#fffde7;
+  --green:#1a6b3a;--wa:#128C7E;
+}
+body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;min-height:100vh;padding-bottom:32px}
+.app{max-width:520px;margin:0 auto}
+
+.hdr{background:var(--y4);border-bottom:3px solid var(--y5);padding:13px 16px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 8px rgba(62,42,0,.15)}
+.hdr h1{font-size:14px;font-weight:700;color:var(--dk);letter-spacing:.8px;text-transform:uppercase}
+.hdr p{font-size:10px;color:var(--dk2);margin-top:2px;letter-spacing:.4px}
+
+.sec{margin:10px 10px 0}
+.sec-title{font-size:10px;font-weight:700;color:var(--dk2);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;padding-left:1px;display:flex;align-items:center;gap:6px}
+.auto-badge{font-size:9px;background:var(--green);color:#fff;padding:1px 6px;border-radius:8px;letter-spacing:.3px;font-weight:600}
+
+.info-tbl{width:100%;border-collapse:collapse;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:var(--y1)}
+.info-tbl td{border:1px solid var(--border);padding:0;vertical-align:middle}
+.il{background:var(--y3);padding:7px 10px;font-size:10px;font-weight:700;color:var(--dk2);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;width:36%}
+.iv{padding:6px 10px;background:var(--y1)}
+.iv input,.iv select{width:100%;border:none;background:transparent;font-size:13px;color:var(--dk);outline:none;font-family:inherit;font-weight:500}
+.iv input::placeholder{color:#c9a820;font-weight:400;font-size:12px}
+.iv.ro{background:var(--y2)}
+.iv.ro input{color:#7a5800;font-weight:600}
+.iv select option{color:#333;background:#fff}
+
+.pills{padding:8px 9px;display:flex;flex-wrap:wrap;gap:5px;background:var(--y1);border:1.5px solid var(--border);border-radius:10px}
+.pill{padding:6px 12px;border-radius:20px;border:1px solid var(--border);font-size:11px;cursor:pointer;color:var(--dk);background:var(--y2);font-family:inherit;font-weight:500;transition:.15s}
+.pill.on{background:var(--y5);border-color:var(--y6);font-weight:700}
+
+/* ═══ DAILY NUMBERS GRID ═══ */
+.dn-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1.5px solid var(--border);border-radius:10px}
+.dn-tbl{border-collapse:collapse;width:100%}
+.dn-tbl th,.dn-tbl td{border:1px solid var(--border);padding:0}
+
+/* Col 1 sticky label */
+.dn-tbl .row-lbl{
+  background:var(--y3);padding:7px 9px;
+  font-size:9.5px;font-weight:700;color:var(--dk2);
+  text-transform:uppercase;letter-spacing:.3px;
+  white-space:nowrap;
+  border-right:2px solid var(--y6);
+  min-width:125px;width:125px;
+}
+/* Exe header cells */
+.dn-tbl .exe-h{
+  background:var(--y4);padding:5px 6px;
+  font-size:10px;font-weight:700;color:var(--dk);
+  text-align:center;letter-spacing:.5px;
+  min-width:68px;
+}
+/* Exe name sub-header */
+.dn-tbl .exe-n{
+  background:var(--y3);padding:3px 5px;
+  font-size:8.5px;font-weight:600;color:var(--dk2);
+  text-align:center;letter-spacing:.2px;
+  max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+/* Total header */
+.dn-tbl .tot-h{
+  background:var(--y5);padding:5px 6px;
+  font-size:10px;font-weight:700;color:var(--dk);
+  text-align:center;letter-spacing:.5px;
+  border-left:2px solid var(--y6);
+  min-width:70px;
+}
+.dn-tbl .tot-n{
+  background:var(--y4);padding:3px 5px;font-size:8.5px;
+  font-weight:700;color:var(--dk2);text-align:center;
+  border-left:2px solid var(--y6);
+}
+/* Metric label top-left */
+.dn-tbl .corner{
+  background:var(--y5);padding:5px 9px;
+  font-size:10px;font-weight:700;color:var(--dk);
+  text-align:left;letter-spacing:.4px;
+  border-right:2px solid var(--y6);
+}
+.dn-tbl .corner-n{
+  background:var(--y4);padding:3px 9px;font-size:8.5px;
+  font-weight:700;color:var(--dk2);
+  border-right:2px solid var(--y6);
+}
+
+/* Input cells */
+.inp-c{background:var(--y1);text-align:center;vertical-align:middle}
+.inp-c input{
+  width:100%;border:none;background:transparent;
+  font-size:12px;color:var(--dk);outline:none;
+  font-family:inherit;font-weight:600;text-align:center;
+  padding:6px 3px;
+}
+.inp-c input::placeholder{color:#d4b800;font-weight:400}
+.inp-c.blank{background:var(--y2)}
+.inp-c.blank input{color:#d4b800;cursor:not-allowed}
+
+/* Total cell */
+.tot-c{
+  background:var(--y3);text-align:center;
+  font-size:12px;font-weight:700;color:var(--dk);
+  padding:6px 5px;
+  border-left:2px solid var(--y6);
+}
+
+/* Tracker */
+.trkcard{background:var(--y2);border:1.5px solid var(--border);border-radius:10px;overflow:hidden}
+.trk{display:grid;grid-template-columns:1fr 1fr}
+.tc{padding:9px 13px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--y1)}
+.tc:nth-child(2n){border-right:none;background:var(--y2)}
+.tc.full{grid-column:1/-1;border-right:none;background:var(--y3)}
+.tc label{font-size:10px;font-weight:600;color:var(--dk2);display:block;margin-bottom:3px}
+.tc .val{font-size:18px;font-weight:700;color:var(--dk)}
+.tc .ach{color:var(--green)}
+.tc input{width:100%;border:none;background:transparent;font-size:13px;color:var(--dk);outline:none;font-family:inherit;font-weight:500}
+
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 10px 0}
+.btn{padding:12px 8px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;transition:.12s}
+.btn:active{transform:scale(.97)}
+.bxl{background:var(--green);color:#fff}
+.bwa{background:var(--wa);color:#fff}
+.bsv{background:var(--y4);color:var(--dk);border:1.5px solid var(--y5);width:100%;margin:9px 0 0}
+.bsv-wrap{margin:0 10px}
+
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--dk);color:var(--y3);padding:9px 22px;border-radius:20px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;white-space:nowrap}
+.toast.on{opacity:1}
+.scroll-hint{font-size:9px;color:var(--dk2);text-align:right;padding:2px 2px 3px;opacity:.65}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hdr">
+    <h1>ZAAN MANAGERS DAILY REPORT</h1>
+  </div>
+
+  <!-- BASIC INFO -->
+  <div class="sec">
+    <div class="sec-title">Basic Info</div>
+    <table class="info-tbl" style="table-layout:fixed;width:100%">
+      <colgroup>
+        <col style="width:22%"><col style="width:28%"><col style="width:22%"><col style="width:28%">
+      </colgroup>
+      <tr>
+        <td class="il">Branch</td>
+        <td class="iv">
+          <select id="branch" onchange="onBranch()">
+            <option value="">— Select —</option>
+            <option>MANGALORE</option><option>BANGALORE</option><option>SHIMOGA</option>
+            <option>HUBLI</option><option>HYDERABAD</option><option>VIJAYAWADA</option>
+            <option>SALEM</option><option>MADURAI</option><option>CHENNAI</option>
+            <option>COIMBATORE</option><option>CALICUT 01</option><option>CALICUT 02</option>
+            <option>ERNAKULAM01</option><option>ERNAKULAM02</option><option>ERNAKULAM03</option>
+          </select>
+        </td>
+        <td class="il">Manager</td>
+        <td class="iv ro"><input type="text" id="manager" placeholder="Auto fill" readonly></td>
+      </tr>
+      <tr>
+        <td class="il">Date</td>
+        <td class="iv"><input type="date" id="date" onchange="onDate()"></td>
+        <td class="il">Day</td>
+        <td class="iv ro"><input type="text" id="day" readonly placeholder="Auto fill"></td>
+      </tr>
+      <tr>
+        <td class="il">State</td>
+        <td class="iv ro"><input type="text" id="state" placeholder="Auto fill" readonly></td>
+        <td class="il">Activity</td>
+        <td class="iv">
+          <select id="activity" onchange="onActivity(this)">
+            <option value="">— Select —</option>
+            <option value="DLR/GRGE VISITS">DLR / Garage Visits</option>
+            <option value="VAN CAMPAIGNS">Van Campaigns</option>
+            <option value="SPOT/SHOP/CANOPY">Spot / Shop / Canopy</option>
+            <option value="MINI MEET/EXHIBITION">Mini Meet / Exhibition</option>
+          </select>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- DAILY NUMBERS PER EXECUTIVE -->
+  <div class="sec">
+    <div class="sec-title">
+      Daily Numbers — Per Executive
+      <span class="auto-badge" id="exe-badge" style="display:none">AUTO</span>
+    </div>
+    <div class="scroll-hint" id="scroll-hint" style="display:none">⟵ swipe to scroll ⟶</div>
+    <div class="dn-wrap">
+      <table class="dn-tbl">
+        <thead>
+          <tr>
+            <th class="corner">METRIC</th>
+            <th class="exe-h" id="h1">EXE 1</th>
+            <th class="exe-h" id="h2">EXE 2</th>
+            <th class="exe-h" id="h3">EXE 3</th>
+            <th class="exe-h" id="h4">EXE 4</th>
+            <th class="exe-h" id="h5">EXE 5</th>
+            <th class="tot-h">TOTAL</th>
+          </tr>
+          <tr>
+            <th class="corner-n">NAME</th>
+            <th class="exe-n" id="n1" title="">—</th>
+            <th class="exe-n" id="n2" title="">—</th>
+            <th class="exe-n" id="n3" title="">—</th>
+            <th class="exe-n" id="n4" title="">—</th>
+            <th class="exe-n" id="n5" title="">—</th>
+            <th class="tot-n">SUM</th>
+          </tr>
+        </thead>
+        <tbody id="dn-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ACTIVITY TRACKER -->
+  <div class="sec">
+    <div class="sec-title">Activity Tracker — Month Total</div>
+    <div class="trkcard">
+      <div class="trk">
+        <div class="tc"><label>No. of Activities</label><div class="val" id="t_act">0</div></div>
+        <div class="tc"><label>DLRs Visited</label><div class="val" id="t_dlrs">0</div></div>
+        <div class="tc"><label>New DLRs</label><div class="val" id="t_ndlrs">0</div></div>
+        <div class="tc"><label>Garages Visited</label><div class="val" id="t_gar">0</div></div>
+        <div class="tc"><label>New Garages</label><div class="val" id="t_ngar">0</div></div>
+        <div class="tc"><label>Order Value (₹)</label><div class="val" id="t_ov">0</div></div>
+        <div class="tc"><label>Billed Value (₹)</label><div class="val" id="t_bv">0</div></div>
+        <div class="tc"><label>Target (₹)</label><input type="number" id="target" placeholder="Enter target..." oninput="upd()"></div>
+        <div class="tc full" style="border-bottom:none"><label>Achievement %</label><div class="val ach" id="t_ach">0%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btns">
+    <button class="btn bxl" onclick="expExcel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      Export Excel
+    </button>
+    <button class="btn bwa" onclick="sendWA()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      WhatsApp
+    </button>
+  </div>
+  <div class="bsv-wrap">
+    <button class="btn bsv" onclick="saveReport()">💾 Save Daily Report</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const BRANCH_DATA = {
+  'ERNAKULAM01':{ manager:'SUDHEESH', state:'KERALA', execs:["RIBIN D'SILVA","RUSSEL JOHN","SHAMON","GOPAL DAS","GOPU DINESH"] },
+  'ERNAKULAM02':{ manager:'RAJESH', state:'KERALA', execs:["JITHIN","SARATH KUMAR P R","JASIN M","VIJIN S","SUJITH N"] },
+  'ERNAKULAM03':{ manager:'PRADEEP', state:'KERALA', execs:["ELDHO V.C","SUNIL KUMAR T C","SHANIL C R"] },
+  'CALICUT 01': { manager:'ARUN', state:'KERALA', execs:["ANIL KUMAR M","ARUN N","JOBY","ABILASH S"] },
+  'CALICUT 02': { manager:'VIVEK', state:'KERALA', execs:["SHOUKKATHALI","VIVEK C","SIVADASAN N P"] },
+  'MANGALORE':  { manager:'PREETHAM', state:'KARNATAKA', execs:["DEEKSHITH","RAJESH","RAVI ACHARYA","SAGAR"] },
+  'BANGALORE':  { manager:'NEW', state:'KARNATAKA', execs:["RAGHAVENDRA","AKSHAY KUMAR","HARISH KUMAR","ASHUTOSH.G"] },
+  'SHIMOGA':    { manager:'SUDHEENDRA', state:'KARNATAKA', execs:["SANDEEPA A.G","SARAVANA PRABHU"] },
+  'HUBLI':      { manager:'SHAMBU', state:'KARNATAKA', execs:["NAGARAJA","MANJUNATH","VENKATESH","MANOJ NAVAGEKAR"] },
+  'COIMBATORE': { manager:'MANIKANTAN', state:'TAMIL NADU', execs:["MAHESH KUMAR","VISHAL","VIJAYAKUMAR"] },
+  'CHENNAI':    { manager:'KARTHIKEYAN', state:'TAMIL NADU', execs:["RAJESH R","ELANGO A","ASWATH A","THULASIRAMAN M"] },
+  'SALEM':      { manager:'SARAVANAN', state:'TAMIL NADU', execs:["SENTHILKUMAR","BALAKUMAR","RAMESH R","SARANKUMAR"] },
+  'MADURAI':    { manager:'KARTHIKAI SELVAM', state:'TAMIL NADU', execs:["BALAMURUKAN","DHARMARAJ CHELLA DURAI","RAMAKRISHNAN","SATHEESH KUMAR"] },
+  'HYDERABAD':  { manager:'MANOJ KUMAR', state:'ANDHRA - TELANGANA', execs:["B.YADGIRI","AKHIL ANAND","M.RAKESH","G.RAMESH"] },
+  'VIJAYAWADA': { manager:'RAJASEKHAR', state:'ANDHRA - TELANGANA', execs:["NAGESHWARA RAO","UMESH CHANDRA","SYED AMANULLA"] }
+};
+
+const ROWS=[
+  {id:'dlrs_visited', lbl:'No. of DLRs Visited'},
+  {id:'new_dlrs',     lbl:'New DLRs Visited'},
+  {id:'garages',      lbl:'No. of Garages Visited'},
+  {id:'new_garages',  lbl:'New Garages Visited'},
+  {id:'orders',       lbl:'No. of Orders Taken'},
+  {id:'new_orders',   lbl:'New DLR/Garage Orders'},
+  {id:'order_value',  lbl:'Total Order Value (₹)'},
+  {id:'billed_value', lbl:'Billed Value (₹)'},
+  {id:'dlrs_billed',  lbl:'No. of DLRs Billed'}
+];
+
+let activeExecs = 0;
+let selAct = [];
+let mo = {act:0,dlrs:0,ndlrs:0,gar:0,ngar:0,ov:0,bv:0};
+
+/* BUILD TABLE */
+(function buildTable(){
+  const tbody = document.getElementById('dn-body');
+  ROWS.forEach(r => {
+    const tr = document.createElement('tr');
+    let h = `<td class="row-lbl">${r.lbl}</td>`;
+    for(let i=1;i<=5;i++){
+      h+=`<td class="inp-c blank" id="ic_${r.id}_${i}">
+        <input type="number" id="${r.id}_${i}" min="0" placeholder="—" readonly
+          oninput="calcRow('${r.id}')">
+      </td>`;
+    }
+    h+=`<td class="tot-c" id="tot_${r.id}">—</td>`;
+    tr.innerHTML=h;
+    tbody.appendChild(tr);
+  });
+})();
+
+/* DATE */
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const now=new Date();
+document.getElementById('date').value=now.toISOString().split('T')[0];
+document.getElementById('day').value=DAYS[now.getDay()];
+function onDate(){
+  const d=new Date(document.getElementById('date').value+'T00:00:00');
+  document.getElementById('day').value=DAYS[d.getDay()];
+}
+
+/* BRANCH SELECT */
+function onBranch(){
+  const branch=document.getElementById('branch').value;
+  const info=BRANCH_DATA[branch];
+  if(!info){
+    document.getElementById('manager').value='';
+    document.getElementById('state').value='';
+    ['mgr-badge','exe-badge'].forEach(id=>document.getElementById(id).style.display='none');
+    document.getElementById('scroll-hint').style.display='none';
+    for(let i=1;i<=5;i++){
+      document.getElementById('h'+i).textContent='EXE '+i;
+      document.getElementById('n'+i).textContent='—';
+    }
+    ROWS.forEach(r=>{
+      for(let i=1;i<=5;i++){
+        const inp=document.getElementById(`${r.id}_${i}`);
+        const cell=document.getElementById(`ic_${r.id}_${i}`);
+        inp.value=''; inp.readOnly=true; inp.placeholder='—';
+        cell.classList.add('blank');
+      }
+      document.getElementById('tot_'+r.id).textContent='—';
+    });
+    activeExecs=0; return;
+  }
+
+  document.getElementById('manager').value=info.manager;
+  document.getElementById('state').value=info.state;
+  document.getElementById('scroll-hint').style.display=info.execs.length>2?'block':'none';
+  activeExecs=info.execs.length;
+
+  for(let i=1;i<=5;i++){
+    const has=i<=info.execs.length;
+    const name=has?info.execs[i-1]:'—';
+    document.getElementById('h'+i).textContent='EXE '+i;
+    const nc=document.getElementById('n'+i);
+    nc.textContent=has?shortName(name):'—';
+    nc.title=name;
+    ROWS.forEach(r=>{
+      const inp=document.getElementById(`${r.id}_${i}`);
+      const cell=document.getElementById(`ic_${r.id}_${i}`);
+      inp.value='';
+      if(has){inp.readOnly=false;inp.placeholder='0';cell.classList.remove('blank');}
+      else{inp.readOnly=true;inp.placeholder='—';cell.classList.add('blank');}
+    });
+  }
+  ROWS.forEach(r=>calcRow(r.id));
+}
+
+function shortName(n){
+  if(n.length<=11)return n;
+  const p=n.split(' ');
+  return p.length>1?p[0]+' '+p[p.length-1][0]+'.':n.substring(0,10)+'…';
+}
+
+/* ROW TOTAL */
+function calcRow(rid){
+  let s=0;
+  for(let i=1;i<=activeExecs;i++) s+=parseFloat(document.getElementById(`${rid}_${i}`).value)||0;
+  const isCurr=rid==='order_value'||rid==='billed_value';
+  document.getElementById('tot_'+rid).textContent=s>0?(isCurr?'₹'+s.toLocaleString('en-IN'):s):'—';
+  upd();
+}
+
+/* TRACKER */
+function onActivity(sel){
+  selAct=sel.value?[sel.value]:[];
+  upd();
+}
+
+function rSum(rid){
+  let s=0;
+  for(let i=1;i<=5;i++){const el=document.getElementById(`${rid}_${i}`);if(el)s+=parseFloat(el.value)||0;}
+  return s;
+}
+
+function upd(){
+  document.getElementById('t_act').textContent=mo.act+selAct.length;
+  document.getElementById('t_dlrs').textContent=mo.dlrs+rSum('dlrs_visited');
+  document.getElementById('t_ndlrs').textContent=mo.ndlrs+rSum('new_dlrs');
+  document.getElementById('t_gar').textContent=mo.gar+rSum('garages');
+  document.getElementById('t_ngar').textContent=mo.ngar+rSum('new_garages');
+  const ov=mo.ov+rSum('order_value'),bv=mo.bv+rSum('billed_value');
+  document.getElementById('t_ov').textContent='₹'+ov.toLocaleString('en-IN');
+  document.getElementById('t_bv').textContent='₹'+bv.toLocaleString('en-IN');
+  const tgt=parseFloat(document.getElementById('target').value)||0;
+  document.getElementById('t_ach').textContent=(tgt>0?Math.round(bv/tgt*100):0)+'%';
+}
+
+/* COLLECT */
+function collectData(){
+  const branch=document.getElementById('branch').value;
+  const info=BRANCH_DATA[branch]||{execs:[]};
+  const d={
+    branch,date:document.getElementById('date').value,
+    day:document.getElementById('day').value,
+    manager:document.getElementById('manager').value,
+    state:document.getElementById('state').value,
+    activity:document.getElementById('activity').value,
+    target:parseFloat(document.getElementById('target').value)||0,
+    execs:info.execs
+  };
+  ROWS.forEach(r=>{
+    d[r.id]=[];
+    for(let i=1;i<=5;i++) d[r.id].push(parseFloat(document.getElementById(`${r.id}_${i}`).value)||0);
+    d[r.id+'_total']=d[r.id].reduce((a,b)=>a+b,0);
+  });
+  return d;
+}
+
+/* SAVE */
+function saveReport(){
+  const d=collectData();
+  const saved=JSON.parse(localStorage.getItem('zaan_reports')||'[]');
+  saved.push(d);localStorage.setItem('zaan_reports',JSON.stringify(saved));
+  mo.act+=selAct.length; mo.dlrs+=d.dlrs_visited_total; mo.ndlrs+=d.new_dlrs_total;
+  mo.gar+=d.garages_total; mo.ngar+=d.new_garages_total;
+  mo.ov+=d.order_value_total; mo.bv+=d.billed_value_total;
+  showToast('✅ Report saved!');
+}
+
+/* EXPORT EXCEL */
+function expExcel(){
+  const d=collectData();
+  const ex=d.execs.length?d.execs:['—','—','—','—','—'];
+  const aoa=[];
+  aoa.push(['ZAAN ACTIVITY DAY REPORT - PAL BM']);
+  aoa.push([]);
+  aoa.push(['BRANCH',d.branch,'','MANAGER',d.manager,'','ACTIVITY',d.activity]);
+  aoa.push(['DATE',d.date,'','DAY',d.day,'','STATE',d.state]);
+  aoa.push([]);
+  aoa.push(['METRIC','EXE 1','EXE 2','EXE 3','EXE 4','EXE 5','TOTAL']);
+  aoa.push(['NAME',...Array.from({length:5},(_,i)=>ex[i]||'—'),'']);
+  ROWS.forEach(r=>aoa.push([r.lbl,...d[r.id],d[r.id+'_total']]));
+  aoa.push([]);
+  aoa.push(['ACTIVITY TRACKER FOR THE MONTH']);
+  aoa.push(['No. of Activities',mo.act+selAct.length]);
+  aoa.push(['DLRs Visited',mo.dlrs+d.dlrs_visited_total]);
+  aoa.push(['New DLRs',mo.ndlrs+d.new_dlrs_total]);
+  aoa.push(['Garages Visited',mo.gar+d.garages_total]);
+  aoa.push(['New Garages',mo.ngar+d.new_garages_total]);
+  aoa.push(['Order Value (₹)',mo.ov+d.order_value_total]);
+  aoa.push(['Billed Value (₹)',mo.bv+d.billed_value_total]);
+  aoa.push(['Target (₹)',d.target]);
+  const bv=mo.bv+d.billed_value_total;
+  aoa.push(['Achievement %',d.target>0?(bv/d.target*100).toFixed(1)+'%':'0%']);
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  ws['!cols']=[{wch:26},{wch:18},{wch:18},{wch:18},{wch:18},{wch:18},{wch:14}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Daily Report');
+  XLSX.writeFile(wb,`ZAAN_${d.branch}_${d.date}.xlsx`);
+  showToast('📥 Excel exported!');
+}
+
+/* WHATSAPP */
+function sendWA(){
+  const d=collectData();
+  const ex=d.execs;
+  let lines='';
+  for(let i=0;i<activeExecs;i++){
+    lines+=`\n*EXE ${i+1} — ${ex[i]}*\n`;
+    ROWS.forEach(r=>{ lines+=`${r.lbl}: ${d[r.id][i]||0}\n`; });
+  }
+  const bv=mo.bv+d.billed_value_total,tgt=d.target;
+  const txt=`⭐ *ZAAN ACTIVITY DAY REPORT*\n📅 ${d.date} | ${d.day}\n\n🏢 *Branch:* ${d.branch}\n👤 *Manager:* ${d.manager}\n🗺️ *State:* ${d.state}\n🎯 *Activity:* ${d.activity||'—'}\n${lines}\n📊 *Totals:*\n• DLRs Visited: ${d.dlrs_visited_total}\n• Order Value: ₹${d.order_value_total.toLocaleString('en-IN')}\n• Billed: ₹${d.billed_value_total.toLocaleString('en-IN')}\n\n📈 *Month:* ₹${bv.toLocaleString('en-IN')} / ₹${tgt.toLocaleString('en-IN')} = ${tgt>0?Math.round(bv/tgt*100):0}%`;
+  window.open('https://wa.me/?text='+encodeURIComponent(txt));
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),2200);
+}
+</script>
+</body>
+</html>
